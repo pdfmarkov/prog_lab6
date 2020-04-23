@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: main.Client
+Class-Path: logback-core-1.3.0-alpha5.jar slf4j-api-1.7.30.jar logback-c
+ lassic-1.2.3.jar CommandLib.jar gson-2.8.5.jar
+
