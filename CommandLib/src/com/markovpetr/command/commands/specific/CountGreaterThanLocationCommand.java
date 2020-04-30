@@ -21,15 +21,8 @@ public class CountGreaterThanLocationCommand extends Command implements Fillable
 				return "Команда не может быть выполнена, т.к. коллекция пуста. " +
 								"Добавьте элементы в коллекцию с помощью команды add";
 			} else {
-				// TODO: Сообщаю что этот код не рабочий, он не делает то что нужно
 				Location location = (Location) args[0];
-
-				int counter = 0;
-				while (persons.peek() != null) {
-					persons.remove();
-				}
-
-				return "Количество элементов большее заданного: " + counter;
+				return "Количество элементов большее заданного: " + persons.stream().filter(person -> person.getLocation().length() > location.length()).count();
 			}
 		} catch (IllegalArgumentException e) {
 			return e.getMessage();
