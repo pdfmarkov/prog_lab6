@@ -9,6 +9,8 @@ public abstract class Answer implements Serializable {
 		this.answer = answer;
 	}
 
+	public String getAnswer(){ return answer; }
+
 	public abstract void logAnswer();
 	public abstract void printAnswer();
 }
