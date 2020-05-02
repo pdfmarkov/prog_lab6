@@ -25,6 +25,7 @@ public class Receiver extends Thread {
 	public void run() {
 		while (!isInterrupted()) {
 			try {
+				buffer.clear();
 				channel.connect(serverAddress);
 				channel.receive(buffer);
 				buffer.flip();
@@ -32,13 +33,35 @@ public class Receiver extends Thread {
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer.array());
 				ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
 				Answer answer = (Answer) objectInputStream.readObject();
-				answer.printAnswer();
+
+				if (answer.getAnswer().equals("BigData")){
+					System.out.println("Слишком большой объем данных. Ожидаемое количество пакетов:");
+						buffer.clear();
+						channel.receive(buffer);
+						buffer.flip();
+						byteArrayInputStream = new ByteArrayInputStream(buffer.array());
+						objectInputStream = new ObjectInputStream(byteArrayInputStream);
+						Answer countAnswer = (Answer) objectInputStream.readObject();
+						countAnswer.printAnswer();
+						String bigAnswer ="";
+					for( int i=0;i<Integer.parseInt(countAnswer.getAnswer()); i++){
+						buffer.clear();
+						channel.receive(buffer);
+						buffer.flip();
+						byteArrayInputStream = new ByteArrayInputStream(buffer.array());
+						objectInputStream = new ObjectInputStream(byteArrayInputStream);
+						Answer newAnswer = (Answer) objectInputStream.readObject();
+						System.out.print(newAnswer.getAnswer());
+					}
+				} else { answer.printAnswer(); }
 
 				objectInputStream.close();
 				byteArrayInputStream.close();
 				buffer.clear();
 				channel.disconnect();
 			} catch (PortUnreachableException | IllegalStateException e) {
+				e.getMessage();
+				e.printStackTrace();
 				System.out.println("Сервер не доступен");
 				try {
 					channel.disconnect();
@@ -56,4 +79,6 @@ public class Receiver extends Thread {
 		this.setDaemon(true);
 		super.start();
 	}
+
+
 }
